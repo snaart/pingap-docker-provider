@@ -1,0 +1,27 @@
+[package]
+name = "pingap-docker-provider"
+version = "0.1.0"
+edition = "2021"
+authors = ["Nikita Stepanov"]
+license = "MIT"
+description = "Automatic Pingap reverse proxy configurator for Docker containers"
+repository = "https://github.com/YOUR_USERNAME/pingap-docker-provider"
+readme = "README.md"
+keywords = ["docker", "reverse-proxy", "pingap", "service-discovery"]
+categories = ["network-programming", "web-programming"]
+
+[dependencies]
+tokio = { version = "1.36", features = ["full"] }
+bollard = "0.15"
+reqwest = { version = "0.11", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1.0"
+backoff = { version = "0.4", features = ["tokio"] }
+futures = "0.3"
+url = "2.5"
+
+[dev-dependencies]
+mockito = "1.2"

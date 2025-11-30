@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Mock Pingap for demonstration purposes (or actual Pingap if image available)
+  # Since I don't have the actual Pingap image name/config handy, I'll use a placeholder or assume 'pingap/pingap'
+  # For the sake of the user request, I will assume 'pingap/pingap' exists or use a generic one.
+  # The user request mentions "pingap:6188".
+  pingap:
+    image: pingap/pingap:latest # Replace with actual image if different
+    ports:
+      - "6188:6188" # Admin API
+      - "8000:8000" # Proxy port
+    volumes:
+      - ./pingap.toml:/app/pingap.toml # Configuration file if needed
+    command: [ "-c", "/app/pingap.toml" ]
+
+  provider:
+    build: ../../Desktop/pingap-docker-provider
+    environment:
+      - PINGAP_ADMIN_URL=http://pingap:6188
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - LOG_LEVEL=debug
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - pingap
+
+  # Demo Application
+  whoami:
+    image: traefik/whoami
+    labels:
+      - "pingap.enable=true"
+      - "pingap.service.name=whoami"
+      - "pingap.http.host=whoami.local"           # Simplified host routing
+      - "pingap.http.paths=/whoami,/test"         # Multiple paths
+      - "pingap.http.priority=10"                  # Priority routing
+      # Alternative: explicit rule
+      # - "pingap.http.rule=Host(`whoami.local`) && PathPrefix(`/whoami`)"
